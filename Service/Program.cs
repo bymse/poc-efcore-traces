@@ -13,7 +13,7 @@ builder
     .AddDataLayer(builder.Configuration)
     .AddOpenTelemetry()
     .WithTracing(e => { e
-        .AddAspNetCoreInstrumentation()
+        .SetSampler(new AlwaysOnSampler())
         .AddSource(DataLayerConfiguration.TELEMETRY_SOURCE)
         .AddConsoleExporter(); });
 
