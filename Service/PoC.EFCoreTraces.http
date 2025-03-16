@@ -1,6 +1,0 @@
-@PoC.EFCoreTraces_HostAddress = http://localhost:5010
-
-GET {{PoC.EFCoreTraces_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
