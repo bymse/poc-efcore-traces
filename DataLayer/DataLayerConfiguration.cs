@@ -9,6 +9,8 @@ namespace DataLayer;
 
 public static class DataLayerConfiguration
 {
+    public static string TelemetrySource => EFCoreDiagnosticEventsObserver.ActivitySource.Name;
+    
     private static readonly ProxyGenerator Generator = new();
 
     public static EFCoreDiagnosticSourceObserver AddDataLayer(this IServiceCollection services,
@@ -35,7 +37,7 @@ public static class DataLayerConfiguration
                 {
                     var instance = sp.GetRequiredService(type);
                     var interceptor = sp.GetRequiredService<RepositoryInterceptor>();
-                    return Generator.CreateClassProxyWithTarget(instance, interceptor);
+                    return Generator.CreateInterfaceProxyWithTarget(@interface, Type.EmptyTypes, instance, interceptor);
                 });
             }
         }

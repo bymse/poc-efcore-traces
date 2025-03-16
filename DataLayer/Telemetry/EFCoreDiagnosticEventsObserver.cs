@@ -15,7 +15,7 @@ internal class EFCoreDiagnosticEventsObserver : IObserver<KeyValuePair<string, o
     private const string SERVER_ADDRESS = "server.address";
     private const string DB_RETURNED_ROWS = "db.response.returned_rows";
 
-    private static readonly ActivitySource ActivitySource = new("DataLayer.Telemetry.EFCoreDiagnostics", "1.0.0");
+    public static readonly ActivitySource ActivitySource = new("DataLayer.Telemetry.EFCoreDiagnostics", "1.0.0");
 
     public void OnNext(KeyValuePair<string, object?> value)
     {

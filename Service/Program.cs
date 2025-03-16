@@ -2,9 +2,18 @@ using DataLayer;
 using DataLayer.EFCore;
 using DataLayer.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
+builder
+    .Services
+    .AddOpenTelemetry()
+    .WithTracing(e =>
+    {
+        e.AddSource(DataLayerConfiguration.TelemetrySource);
+        e.AddConsoleExporter();
+    });
 
 using var observer = builder.Services.AddDataLayer(builder.Configuration);
 
@@ -19,7 +28,10 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("orders", ([FromServices] IOrdersRepository repo) => repo.GetAll());
 
-var migrator = app.Services.GetRequiredService<IMigrator>();
-await migrator.MigrateAsync();
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<IMigrator>();
+    await dbContext.MigrateAsync();
+}
 
 app.Run();

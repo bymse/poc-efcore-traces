@@ -14,19 +14,7 @@ public class RepositoryInterceptor : IInterceptor
 
         if (invocation.ReturnValue is Task task)
         {
-            invocation.ReturnValue = AwaitTaskWithOperationName(task);
-        }
-    }
-
-    private static async Task AwaitTaskWithOperationName(Task task)
-    {
-        try
-        {
-            await task.ConfigureAwait(false);
-        }
-        finally
-        {
-            OperationNameContainer.OperationName = null;
+            task.ContinueWith(_ => OperationNameContainer.OperationName = null);
         }
     }
 }
