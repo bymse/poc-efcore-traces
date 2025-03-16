@@ -4,18 +4,18 @@ using DataLayer.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using OpenTelemetry.Trace;
 
+using var observer = DataLayerConfiguration.StartObserver();
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder
     .Services
+    .AddDataLayer(builder.Configuration)
     .AddOpenTelemetry()
-    .WithTracing(e =>
-    {
-        e.AddSource(DataLayerConfiguration.TelemetrySource);
-        e.AddConsoleExporter();
-    });
-
-using var observer = builder.Services.AddDataLayer(builder.Configuration);
+    .WithTracing(e => { e
+        .AddAspNetCoreInstrumentation()
+        .AddSource(DataLayerConfiguration.TELEMETRY_SOURCE)
+        .AddConsoleExporter(); });
 
 var app = builder.Build();
 
@@ -33,5 +33,6 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<IMigrator>();
     await dbContext.MigrateAsync();
 }
+
 
 app.Run();

@@ -8,13 +8,17 @@ public class RepositoryInterceptor : IInterceptor
     {
         var className = invocation.TargetType?.Name;
         var methodName = invocation.Method.Name;
-        OperationNameContainer.OperationName = $"{className}.{methodName}";
+        EFCoreDiagnosticEventsObserver.StartActivity($"{className}.{methodName}");
 
         invocation.Proceed();
 
         if (invocation.ReturnValue is Task task)
         {
-            task.ContinueWith(_ => OperationNameContainer.OperationName = null);
+            task.ContinueWith(_ => EFCoreDiagnosticEventsObserver.StopActivity());
+        }
+        else
+        {
+            EFCoreDiagnosticEventsObserver.StopActivity();
         }
     }
 }

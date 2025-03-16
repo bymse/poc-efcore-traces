@@ -9,11 +9,11 @@ namespace DataLayer;
 
 public static class DataLayerConfiguration
 {
-    public static string TelemetrySource => EFCoreDiagnosticEventsObserver.ActivitySource.Name;
+    public const string TELEMETRY_SOURCE = EFCoreDiagnosticEventsObserver.ACTIVITY_SOURCE_NAME;
     
     private static readonly ProxyGenerator Generator = new();
 
-    public static EFCoreDiagnosticSourceObserver AddDataLayer(this IServiceCollection services,
+    public static IServiceCollection AddDataLayer(this IServiceCollection services,
         IConfiguration configuration)
     {
         services
@@ -42,6 +42,11 @@ public static class DataLayerConfiguration
             }
         }
 
+        return services;
+    }
+
+    public static IDisposable StartObserver()
+    {
         var observer = new EFCoreDiagnosticSourceObserver();
         observer.Subscribe();
 

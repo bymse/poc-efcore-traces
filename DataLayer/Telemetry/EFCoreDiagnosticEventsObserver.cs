@@ -14,8 +14,28 @@ internal class EFCoreDiagnosticEventsObserver : IObserver<KeyValuePair<string, o
     private const string SERVER_PORT = "server.port";
     private const string SERVER_ADDRESS = "server.address";
     private const string DB_RETURNED_ROWS = "db.response.returned_rows";
+    public const string ACTIVITY_SOURCE_NAME = "DataLayer.Telemetry.EFCoreDiagnostics";
 
-    public static readonly ActivitySource ActivitySource = new("DataLayer.Telemetry.EFCoreDiagnostics", "1.0.0");
+    private static readonly ActivitySource ActivitySource = new(ACTIVITY_SOURCE_NAME);
+
+    public static void StartActivity(string operationName)
+    {
+        var created = ActivitySource.CreateActivity(ACTIVITY_NAME, ActivityKind.Client);
+        if (created == null) return;
+
+        created.DisplayName = operationName;
+        created.SetTag(DB_OPERATION_NAME, operationName);
+        created.Start();
+    }
+
+    public static void StopActivity()
+    {
+        var activity = Activity.Current;
+        if (activity != null && activity.Source == ActivitySource && !activity.IsStopped)
+        {
+            activity.Stop();
+        }
+    }
 
     public void OnNext(KeyValuePair<string, object?> value)
     {
@@ -24,21 +44,14 @@ internal class EFCoreDiagnosticEventsObserver : IObserver<KeyValuePair<string, o
 
         var activity = Activity.Current;
 
-        if (name == RelationalEventId.CommandCreated.Name)
+        if (name == RelationalEventId.CommandExecuting.Name)
         {
-            activity = ActivitySource.CreateActivity(ACTIVITY_NAME, ActivityKind.Internal);
-            if (activity == null)
+            if (activity == null || activity.Source != ActivitySource)
             {
                 return;
             }
 
             var command = (CommandEventData)payload!;
-            var operationName = OperationNameContainer.OperationName;
-            activity.DisplayName = OperationNameContainer.OperationName ?? ACTIVITY_NAME;
-            if (operationName != null)
-            {
-                activity.SetTag(DB_OPERATION_NAME, operationName);
-            }
 
             var providerName = command.Context?.Database.ProviderName;
             if (providerName == "Npgsql.EntityFrameworkCore.PostgreSQL")
@@ -68,8 +81,6 @@ internal class EFCoreDiagnosticEventsObserver : IObserver<KeyValuePair<string, o
             activity.SetTag(ERROR_TYPE, error.Exception.GetType().Name);
             activity.SetTag(DB_STATUS_CODE, error.Exception.HResult);
             activity.SetStatus(ActivityStatusCode.Error, error.Exception.Message);
-
-            activity.Stop();
         }
         else if (name == RelationalEventId.CommandCanceled.Name)
         {
@@ -79,19 +90,17 @@ internal class EFCoreDiagnosticEventsObserver : IObserver<KeyValuePair<string, o
             }
 
             activity.SetStatus(ActivityStatusCode.Error, "Command was canceled");
-            activity.Stop();
         }
-        else if (name == RelationalEventId.DataReaderDisposing.Name)
+        else if (name == RelationalEventId.DataReaderClosing.Name)
         {
             if (activity == null || activity.Source != ActivitySource)
             {
                 return;
             }
 
-            var data = (DataReaderDisposingEventData)payload!;
+            var data = (DataReaderClosingEventData)payload!;
             activity.SetTag(DB_RETURNED_ROWS, data.ReadCount);
             activity.SetStatus(ActivityStatusCode.Ok);
-            activity.Stop();
         }
     }
 
