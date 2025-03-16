@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.EFCore;
 
-public class MyAppDbContext(DbContextOptions<MyAppDbContext> options) : DbContext(options)
+internal class MyDbContext(DbContextOptions<MyDbContext> options) : DbContext(options)
 {
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Product> Products { get; set; }

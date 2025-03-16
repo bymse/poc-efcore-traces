@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataLayer.Repositories;
 
-internal class OrdersRepository(MyAppDbContext dbContext) : IOrdersRepository
+internal class OrdersRepository(MyDbContext dbContext) : IOrdersRepository
 {
     public Task<OrderModel[]> GetAll()
     {

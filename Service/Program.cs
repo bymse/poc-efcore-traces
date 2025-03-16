@@ -1,19 +1,12 @@
+using DataLayer;
 using DataLayer.EFCore;
 using DataLayer.Repositories;
-using DataLayer.Telemetry;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services
-    .AddDbContext<MyAppDbContext>(e =>
-    {
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        e.UseNpgsql(connectionString);
-    })
-    .AddOpenApi();
+builder.Services.AddOpenApi();
 
-using var observer = builder.Services.AddDataLayerTelemetry();
+using var observer = builder.Services.AddDataLayer(builder.Configuration);
 
 var app = builder.Build();
 
@@ -25,5 +18,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapGet("orders", ([FromServices] IOrdersRepository repo) => repo.GetAll());
+
+var migrator = app.Services.GetRequiredService<IMigrator>();
+await migrator.MigrateAsync();
 
 app.Run();

@@ -1,15 +1,27 @@
 ﻿using Castle.DynamicProxy;
+using DataLayer.EFCore;
+using DataLayer.Telemetry;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DataLayer.Telemetry;
+namespace DataLayer;
 
-public static class DataLayerTelemetryConfiguration
+public static class DataLayerConfiguration
 {
     private static readonly ProxyGenerator Generator = new();
 
-    public static EFCoreDiagnosticSourceObserver AddDataLayerTelemetry(this IServiceCollection services)
+    public static EFCoreDiagnosticSourceObserver AddDataLayer(this IServiceCollection services,
+        IConfiguration configuration)
     {
-        services.AddSingleton<RepositoryInterceptor>();
+        services
+            .AddTransient<IMigrator, Migrator>()
+            .AddDbContext<MyDbContext>(e =>
+            {
+                var connectionString = configuration.GetConnectionString("DefaultConnection");
+                e.UseNpgsql(connectionString);
+            })
+            .AddSingleton<RepositoryInterceptor>();
 
         foreach (var type in typeof(RepositoryInterceptor).Assembly.GetTypes()
                      .Where(e => e.IsClass)
