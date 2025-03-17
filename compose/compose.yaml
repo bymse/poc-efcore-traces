@@ -9,6 +9,94 @@ services:
       - "35432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  
+  jaeger:
+    image: ${JAEGERTRACING_IMAGE}
+    container_name: jaeger
+    command:
+      - "--memory.max-traces=25000"
+      - "--query.base-path=/jaeger/ui"
+      - "--prometheus.server-url=http://${PROMETHEUS_ADDR}"
+      - "--prometheus.query.normalize-calls=true"
+      - "--prometheus.query.normalize-duration=true"
+    deploy:
+      resources:
+        limits:
+          memory: 1200M
+    restart: unless-stopped
+    ports:
+      - "${JAEGER_PORT}"         # Jaeger UI
+      - "${OTEL_COLLECTOR_PORT_GRPC}"
+    environment:
+      - METRICS_STORAGE_TYPE=prometheus
+
+  prometheus:
+    image: ${PROMETHEUS_IMAGE}
+    container_name: prometheus
+    command:
+      - --web.console.templates=/etc/prometheus/consoles
+      - --web.console.libraries=/etc/prometheus/console_libraries
+      - --storage.tsdb.retention.time=1h
+      - --config.file=/etc/prometheus/prometheus-config.yaml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+      - --web.route-prefix=/
+      - --web.enable-otlp-receiver
+      - --enable-feature=exemplar-storage
+    volumes:
+      - ./configs/prometheus/prometheus-config.yaml:/etc/prometheus/prometheus-config.yaml
+    deploy:
+      resources:
+        limits:
+          memory: 300M
+    restart: unless-stopped
+    ports:
+      - "${PROMETHEUS_PORT}:${PROMETHEUS_PORT}" 
+
+  grafana:
+    image: ${GRAFANA_IMAGE}
+    container_name: grafana
+    deploy:
+      resources:
+        limits:
+          memory: 120M
+    restart: unless-stopped
+    volumes:
+      - ./configs/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./configs/grafana/provisioning/:/etc/grafana/provisioning/
+    ports:
+      - "${GRAFANA_PORT}"
+
+  otel-collector:
+    image: ${COLLECTOR_CONTRIB_IMAGE}
+    container_name: otel-collector
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+    restart: unless-stopped
+    command: [ "--config=/etc/otelcol-config.yml", "--config=/etc/otelcol-config-extras.yml" ]
+    user: 0:0
+    volumes:
+      - ${HOST_FILESYSTEM}:/hostfs:ro
+      - ${DOCKER_SOCK}:/var/run/docker.sock:ro
+      - ${OTEL_COLLECTOR_CONFIG}:/etc/otelcol-config.yml
+      - ${OTEL_COLLECTOR_CONFIG_EXTRAS}:/etc/otelcol-config-extras.yml
+    ports:
+      - "${OTEL_COLLECTOR_PORT_GRPC}"
+      - "${OTEL_COLLECTOR_PORT_HTTP}"
+    depends_on:
+      jaeger:
+        condition: service_started
+      opensearch:
+        condition: service_healthy
+    environment:
+      - ENVOY_PORT
+      - HOST_FILESYSTEM
+      - OTEL_COLLECTOR_HOST
+      - OTEL_COLLECTOR_PORT_GRPC
+      - OTEL_COLLECTOR_PORT_HTTP
+      - GOMEMLIMIT=160MiB
 
 volumes:
   postgres_data:

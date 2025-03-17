@@ -2,6 +2,7 @@ using DataLayer;
 using DataLayer.EFCore;
 using DataLayer.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 using var observer = DataLayerConfiguration.StartObserver();
@@ -12,6 +13,8 @@ builder
     .Services
     .AddDataLayer(builder.Configuration)
     .AddOpenTelemetry()
+    .ConfigureResource(resource => resource
+        .AddService(serviceName: builder.Environment.ApplicationName))
     .WithTracing(e => { e
         .SetSampler(new AlwaysOnSampler())
         .AddSource(DataLayerConfiguration.TELEMETRY_SOURCE)
