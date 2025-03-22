@@ -99,6 +99,7 @@ services:
     volumes:
       - ./configs/grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./configs/grafana/provisioning/:/etc/grafana/provisioning/
+      - grafana_storage:/var/lib/grafana
     ports:
       - "${GRAFANA_PORT}"
 
@@ -133,3 +134,4 @@ services:
 
 volumes:
   postgres_data:
+  grafana_storage:
