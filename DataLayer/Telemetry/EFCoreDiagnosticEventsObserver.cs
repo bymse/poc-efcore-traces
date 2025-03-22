@@ -99,7 +99,7 @@ internal class EFCoreDiagnosticEventsObserver : IObserver<KeyValuePair<string, o
             }
 
             var data = (DataReaderClosingEventData)payload!;
-            activity.SetTag(DB_RETURNED_ROWS, data.ReadCount);
+            activity.SetTag(DB_RETURNED_ROWS, data.ReadCount - 1);
             activity.SetStatus(ActivityStatusCode.Ok);
         }
     }
