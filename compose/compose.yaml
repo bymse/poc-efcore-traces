@@ -1,14 +1,49 @@
-version: '3.8'
+networks:
+  default:
+    name: opentelemetry-demo
+    driver: bridge
 
 services:
   postgres:
-    image: postgres:17
+    image: ${POSTGRES_IMAGE}
+    container_name: postgres
     environment:
       POSTGRES_PASSWORD: postgres
     ports:
       - "35432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  frontend-proxy:
+    container_name: frontend-proxy
+    build:
+      context: ./
+      dockerfile: ${FRONTEND_PROXY_DOCKERFILE}
+    deploy:
+      resources:
+        limits:
+          memory: 65M
+    restart: unless-stopped
+    ports:
+      - "${ENVOY_PORT}:${ENVOY_PORT}"
+      - 10000:10000
+    environment:
+      - GRAFANA_PORT
+      - GRAFANA_HOST
+      - JAEGER_PORT
+      - JAEGER_HOST
+      - OTEL_COLLECTOR_HOST
+      - OTEL_COLLECTOR_PORT_GRPC
+      - OTEL_COLLECTOR_PORT_HTTP
+      - OTEL_RESOURCE_ATTRIBUTES
+      - OTEL_SERVICE_NAME=frontend-proxy
+      - ENVOY_PORT
+    depends_on:
+      jaeger:
+        condition: service_started
+      grafana:
+        condition: service_started
+    dns_search: ""  
   
   jaeger:
     image: ${JAEGERTRACING_IMAGE}
@@ -88,8 +123,6 @@ services:
     depends_on:
       jaeger:
         condition: service_started
-      opensearch:
-        condition: service_healthy
     environment:
       - ENVOY_PORT
       - HOST_FILESYSTEM
