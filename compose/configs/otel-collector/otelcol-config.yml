@@ -97,23 +97,24 @@ processors:
     check_interval: 5s
     limit_percentage: 80
     spike_limit_percentage: 25
-  transform:
-    error_mode: ignore
+  transform/inject_scope_name:
     trace_statements:
       - context: span
         statements:
-          # could be removed when https://github.com/vercel/next.js/pull/64852 is fixed upstream
-          - replace_pattern(name, "\\?.*", "")
-          - replace_match(name, "GET /api/products/*", "GET /api/products/{productId}")
+          - set(attributes["otel.scope.name"], instrumentation_scope.name)
+          - set(attributes["otel.scope.version"], instrumentation_scope.version)  
 
 connectors:
   spanmetrics:
+    dimensions:
+      - name: otel.scope.name
+        default: Unknown
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, transform, batch]
+      processors: [memory_limiter, transform/inject_scope_name, batch]
       exporters: [otlp, debug, spanmetrics]
     metrics:
       receivers: [hostmetrics, docker_stats, httpcheck/frontend-proxy, otlp, redis, spanmetrics]
