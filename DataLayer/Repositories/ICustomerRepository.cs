@@ -6,4 +6,6 @@ public interface ICustomerRepository
 {
     Task<Customer[]> GetCustomers();
     Task CreateCustomer(Customer customer);
+    Task<Customer?> GetCustomerById(int customerId);
+    Task CreateCustomers(IEnumerable<Customer> customers);
 }

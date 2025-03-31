@@ -7,6 +7,7 @@ using OpenTelemetry.Exporter;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Service.Application;
+using Service.Application.Generator;
 
 using var observer = DataLayerConfiguration.StartObserver();
 
@@ -43,9 +44,10 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<IMigrator>();
     await dbContext.MigrateAsync();
-    
+
     var dataGenerator = scope.ServiceProvider.GetRequiredService<DataGenerator>();
-    await dataGenerator.Generate();
+    await dataGenerator.GenerateOrders();
+    await dataGenerator.GenerateOrdersForFirstCustomer();
 }
 
 app.Run();
