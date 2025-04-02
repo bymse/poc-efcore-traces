@@ -5,9 +5,8 @@ namespace DataLayer.Repositories;
 public interface IOrdersRepository
 {
     Task<OrderModel[]> GetAllModels(int take);
-    Task<int> Count();
-    
     Task CreateOrders(params Order[] order);
+    Task<Order[]> GetCustomerOrders(int customerId);
 }
 
 public class OrderModel

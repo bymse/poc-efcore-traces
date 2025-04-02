@@ -12,6 +12,7 @@
             <th>ID</th>
             <th>First Name</th>
             <th>Last Name</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -21,6 +22,10 @@
                 <td>@customer.Id</td>
                 <td>@customer.FirstName</td>
                 <td>@customer.LastName</td>
+                <td>
+                    <a asp-page="./CustomerDetails" asp-route-customerId="@customer.Id" class="btn btn-primary btn-sm">View
+                        Details</a>
+                </td>
             </tr>
         }
     </tbody>

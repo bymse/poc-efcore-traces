@@ -6,6 +6,29 @@ namespace DataLayer.Repositories;
 
 internal class OrdersRepository(MyDbContext dbContext) : IOrdersRepository
 {
+    public Task<Order[]> GetOrders()
+    {
+        return dbContext.Orders
+            .Include(o => o.Customer)
+            .Include(o => o.Product)
+            .ToArrayAsync();
+    }
+
+    public Task<Order[]> GetCustomerOrders(int customerId)
+    {
+        return dbContext.Orders
+            .Where(o => o.CustomerId == customerId)
+            .Include(o => o.Product)
+            .OrderByDescending(o => o.CreatedDate)
+            .ToArrayAsync();
+    }
+
+    public Task CreateOrder(Order order)
+    {
+        dbContext.Orders.Add(order);
+        return dbContext.SaveChangesAsync();
+    }
+
     public Task<OrderModel[]> GetAllModels(int take)
     {
         return dbContext.Orders

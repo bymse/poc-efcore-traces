@@ -1,0 +1,60 @@
+@page "{CustomerId:int}"
+@model CustomerDetailsModel
+@{
+    ViewData["Title"] = $"Customer: {Model.Customer.FirstName} {Model.Customer.LastName}";
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h1>Customer Details</h1>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>Customer Information</h3>
+    </div>
+    <div class="card-body">
+        <p><strong>First Name:</strong> @Model.Customer.FirstName</p>
+        <p><strong>Last Name:</strong> @Model.Customer.LastName</p>
+        <p><strong>Customer ID:</strong> @Model.Customer.Id</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Orders</h3>
+    </div>
+    <div class="card-body">
+        @if (Model.Orders?.Length > 0)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Description</th>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Created Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model.Orders)
+                    {
+                        <tr>
+                            <td>@order.Id</td>
+                            <td>@order.Description</td>
+                            <td>@order.Product.Name</td>
+                            <td>@order.Product.Category</td>
+                            <td>@order.CreatedDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No orders found for this customer.</p>
+        }
+    </div>
+</div>
