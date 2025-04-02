@@ -11,6 +11,19 @@ internal class CustomerRepository(MyDbContext dbContext) : ICustomerRepository
         return dbContext.Customers.ToArrayAsync();
     }
 
+    public Task<Customer[]> GetCustomers(int skip, int take)
+    {
+        return dbContext.Customers
+            .OrderBy(e => e.Id)
+            .Skip(skip)
+            .Take(take).ToArrayAsync();
+    }
+
+    public Task<int> GetCustomersCount()
+    {
+        return dbContext.Customers.CountAsync();
+    }
+
     public Task CreateCustomer(Customer customer)
     {
         dbContext.Customers.Add(customer);

@@ -1,7 +1,7 @@
 using DataLayer.Entities;
 using DataLayer.Repositories;
 
-namespace Service.Application.Generator;
+namespace Web;
 
 public class DataGenerator(
     ICustomerRepository customerRepository,

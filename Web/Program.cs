@@ -1,19 +1,32 @@
+using DataLayer;
+using DataLayer.EFCore;
+using OpenTelemetry;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Web;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorPages();
+builder
+    .Services
+    .AddDataLayer(builder.Configuration)
+    .AddScoped<DataGenerator>()
+    .AddOpenTelemetry()
+    .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri("http://localhost:8080/otlp-http"))
+    .ConfigureResource(resource => resource
+        .AddService(serviceName: builder.Environment.ApplicationName))
+    .WithTracing(e =>
+    {
+        e
+            .SetSampler(new AlwaysOnSampler())
+            .AddSource(DataLayerConfiguration.TELEMETRY_SOURCE)
+            .AddAspNetCoreInstrumentation();
+    });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -21,5 +34,16 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<IMigrator>();
+    await dbContext.MigrateAsync();
+
+    var dataGenerator = scope.ServiceProvider.GetRequiredService<DataGenerator>();
+    await dataGenerator.GenerateOrders();
+    await dataGenerator.GenerateOrdersForFirstCustomer();
+}
 
 app.Run();
