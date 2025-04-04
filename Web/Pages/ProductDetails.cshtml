@@ -1,0 +1,62 @@
+@page "{ProductId:int}"
+@model ProductDetailsModel
+@{
+    ViewData["Title"] = $"Product: {Model.Product.Name}";
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h1>Product Details</h1>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h3>Product Information</h3>
+    </div>
+    <div class="card-body">
+        <p><strong>Name:</strong> @Model.Product.Name</p>
+        <p><strong>Category:</strong> @Model.Product.Category</p>
+        <p><strong>Product ID:</strong> @Model.Product.Id</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Orders</h3>
+    </div>
+    <div class="card-body">
+        @if (Model.Product.Orders?.Count > 0)
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Description</th>
+                        <th>Customer</th>
+                        <th>Created Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model.Product.Orders)
+                    {
+                        <tr>
+                            <td>@order.Id</td>
+                            <td>@order.Description</td>
+                            <td>
+                                <a asp-page="./CustomerDetails" asp-route-customerId="@order.Customer.Id">
+                                    @order.Customer.FirstName @order.Customer.LastName
+                                </a>
+                            </td>
+                            <td>@order.CreatedDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No orders found for this product.</p>
+        }
+    </div>
+</div>
