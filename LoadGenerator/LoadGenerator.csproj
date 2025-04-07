@@ -11,8 +11,4 @@
       <PackageReference Include="NBomber" Version="6.0.1" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Service\Service.csproj" />
-    </ItemGroup>
-
 </Project>
