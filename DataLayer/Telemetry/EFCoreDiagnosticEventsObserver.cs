@@ -26,11 +26,6 @@ internal class EFCoreDiagnosticEventsObserver : IObserver<KeyValuePair<string, o
 
         if (name == RelationalEventId.CommandCreated.Name)
         {
-            if (activity != null)
-            {
-                return;
-            }
-
             activity = ActivitySource.CreateActivity(ACTIVITY_NAME, ActivityKind.Client);
             if (activity == null) return;
 
