@@ -6,6 +6,8 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Web;
 
+using var observer = DataLayerConfiguration.StartObserver();
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();

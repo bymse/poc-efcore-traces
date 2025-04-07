@@ -4,21 +4,30 @@ namespace DataLayer.Telemetry;
 
 public class RepositoryInterceptor : IInterceptor
 {
+    private static readonly AsyncLocal<string?> OperationNameAsyncLocal = new();
+
+    public static string OperationName => OperationNameAsyncLocal.Value ?? throw new InvalidOperationException();
+
     public void Intercept(IInvocation invocation)
     {
         var className = invocation.TargetType?.Name;
         var methodName = invocation.Method.Name;
-        EFCoreDiagnosticEventsObserver.StartActivity($"{className}.{methodName}");
+        OperationNameAsyncLocal.Value = $"{className}.{methodName}";
 
         invocation.Proceed();
 
         if (invocation.ReturnValue is Task task)
         {
-            task.ContinueWith(_ => EFCoreDiagnosticEventsObserver.StopActivity());
+            task.ContinueWith(_ => Stop());
         }
         else
         {
-            EFCoreDiagnosticEventsObserver.StopActivity();
+            Stop();
         }
+    }
+
+    private static void Stop()
+    {
+        OperationNameAsyncLocal.Value = null;
     }
 }
