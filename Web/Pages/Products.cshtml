@@ -9,11 +9,11 @@
         <h1>Products</h1>
     </div>
     <div class="col text-end">
-        <a asp-page="./ProductCreate" class="btn btn-primary">Create New Product</a>
+        <a asp-page="./ProductCreate" class="btn btn-primary" data-test-id="create-product">Create New Product</a>
     </div>
 </div>
 
-<table class="table">
+<table class="table" data-test-id="products-table">
     <thead>
         <tr>
             <th>ID</th>
@@ -25,12 +25,13 @@
     <tbody>
         @foreach (var product in Model.Products)
         {
-            <tr>
+            <tr data-test-id="product-row" data-product-id="@product.Id">
                 <td>@product.Id</td>
                 <td>@product.Name</td>
                 <td>@product.Category</td>
                 <td>
-                    <a asp-page="./ProductDetails" asp-route-productId="@product.Id" class="btn btn-primary btn-sm">View
+                    <a asp-page="./ProductDetails" asp-route-productId="@product.Id" class="btn btn-primary btn-sm"
+                        data-test-id="view-product-details">View
                         Details</a>
                 </td>
             </tr>

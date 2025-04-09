@@ -6,7 +6,7 @@
 
 <h1>Customers</h1>
 
-<table class="table">
+<table class="table" data-test-id="customers-table">
     <thead>
         <tr>
             <th>ID</th>
@@ -18,12 +18,13 @@
     <tbody>
         @foreach (var customer in Model.Customers)
         {
-            <tr>
+            <tr data-test-id="customer-row" data-customer-id="@customer.Id">
                 <td>@customer.Id</td>
                 <td>@customer.FirstName</td>
                 <td>@customer.LastName</td>
                 <td>
-                    <a asp-page="./CustomerDetails" asp-route-customerId="@customer.Id" class="btn btn-primary btn-sm">View
+                    <a asp-page="./CustomerDetails" asp-route-customerId="@customer.Id" class="btn btn-primary btn-sm"
+                        data-test-id="view-customer-details">View
                         Details</a>
                 </td>
             </tr>

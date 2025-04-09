@@ -12,7 +12,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <form method="post">
+        <form method="post" data-test-id="product-create-form">
             <div class="card">
                 <div class="card-header">
                     <h3>Product Information</h3>
@@ -20,16 +20,19 @@
                 <div class="card-body">
                     <div class="mb-3">
                         <label asp-for="ProductInput.Name" class="form-label">Name</label>
-                        <input asp-for="ProductInput.Name" class="form-control" required />
+                        <input asp-for="ProductInput.Name" class="form-control" required
+                            data-test-id="product-name-input" />
                     </div>
                     <div class="mb-3">
                         <label asp-for="ProductInput.Category" class="form-label">Category</label>
-                        <input asp-for="ProductInput.Category" class="form-control" required />
+                        <input asp-for="ProductInput.Category" class="form-control" required
+                            data-test-id="product-category-input" />
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">Create Product</button>
-                    <a asp-page="./Products" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary" data-test-id="create-product-submit">Create
+                        Product</button>
+                    <a asp-page="./Products" class="btn btn-secondary" data-test-id="cancel-create-product">Cancel</a>
                 </div>
             </div>
         </form>

@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div class="card mb-4">
+<div class="card mb-4" data-test-id="customer-info-card">
     <div class="card-header">
         <h3>Customer Information</h3>
     </div>
@@ -21,14 +21,14 @@
     </div>
 </div>
 
-<div class="card">
+<div class="card" data-test-id="customer-orders-card">
     <div class="card-header">
         <h3>Orders</h3>
     </div>
     <div class="card-body">
         @if (Model.Orders?.Length > 0)
         {
-            <table class="table">
+            <table class="table" data-test-id="customer-orders-table">
                 <thead>
                     <tr>
                         <th>Order ID</th>
@@ -41,7 +41,7 @@
                 <tbody>
                     @foreach (var order in Model.Orders)
                     {
-                        <tr>
+                        <tr data-test-id="order-row" data-order-id="@order.Id">
                             <td>@order.Id</td>
                             <td>@order.Description</td>
                             <td>@order.Product.Name</td>
