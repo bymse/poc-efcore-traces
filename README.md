@@ -1,11 +1,15 @@
 ## TODO
 
-application:
-1. Add repository that extract: full entity with find, entity with projection, aggregation 
-2. There should be one query with performance problem 
-3. Load generator to show problem query
-4. Data generator for database size
+load generator:
+1. Get customers page
+2. Get page for each customer in loop
+3. Get products page
+4. Get page for each product in loop
 
-devops:
-1. Configure grafana dashboard for rps, latency, error rate
-2. Try signaltometricsconnector
+what to show:
+1. Metrics for web server: 
+   1.1 Show spikes for particular endpoint
+   1.2 Show high latency for particular endpoint
+2. Metrics for repositories:
+   2.1 Show spikes for particular method
+   2.2 Show high latency for particular method
