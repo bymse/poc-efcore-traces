@@ -4,7 +4,14 @@
     ViewData["Title"] = "Products";
 }
 
-<h1>Products</h1>
+<div class="row mb-4">
+    <div class="col">
+        <h1>Products</h1>
+    </div>
+    <div class="col text-end">
+        <a asp-page="./ProductCreate" class="btn btn-primary">Create New Product</a>
+    </div>
+</div>
 
 <table class="table">
     <thead>
