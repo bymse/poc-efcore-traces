@@ -39,6 +39,5 @@ namespace DataLayer.Repositories
         public int TotalOrders { get; set; }
         public int UniqueProducts { get; set; }
         public int UniqueCustomers { get; set; }
-        public double PercentageOfAllOrders { get; set; }
     }
 }

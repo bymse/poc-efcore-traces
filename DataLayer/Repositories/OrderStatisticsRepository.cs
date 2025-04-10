@@ -88,7 +88,6 @@ namespace DataLayer.Repositories
                     TotalOrders = g.Count(),
                     UniqueProducts = g.Select(o => o.ProductId).Distinct().Count(),
                     UniqueCustomers = g.Select(o => o.CustomerId).Distinct().Count(),
-                    TotalOrdersCount = dbContext.Orders.Count()
                 })
                 .Select(x => new OrderAveragesByCategory
                 {
@@ -96,7 +95,6 @@ namespace DataLayer.Repositories
                     TotalOrders = x.TotalOrders,
                     UniqueProducts = x.UniqueProducts,
                     UniqueCustomers = x.UniqueCustomers,
-                    PercentageOfAllOrders = (double)x.TotalOrders / x.TotalOrdersCount * 100
                 })
                 .OrderByDescending(c => c.TotalOrders)
                 .FirstAsync();
