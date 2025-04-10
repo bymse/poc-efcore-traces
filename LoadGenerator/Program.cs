@@ -61,7 +61,7 @@ static async Task RunBrowserSession(int sessionId, CancellationToken cancellatio
 static async Task LoadTestSession(IPage page, int sessionId, string baseUrl, CancellationToken cancellationToken)
 {
     var random = new Random();
-    var scenarioType = random.Next(4);
+    var scenarioType = random.Next(5);
 
     ScenarioBase scenario = scenarioType switch
     {
@@ -69,6 +69,7 @@ static async Task LoadTestSession(IPage page, int sessionId, string baseUrl, Can
         1 => new OrderScenario(page, baseUrl),
         2 => new ProductCreationScenario(page, baseUrl),
         3 => new ProductsScenario(page, baseUrl),
+        4 => new OrderStatisticsScenario(page, baseUrl),
         _ => new CustomerScenario(page, baseUrl)
     };
 

@@ -2,6 +2,7 @@ using DataLayer;
 using DataLayer.EFCore;
 using OpenTelemetry;
 using OpenTelemetry.Exporter;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Web;
@@ -10,13 +11,15 @@ using var observer = DataLayerConfiguration.StartObserver();
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string otlpUrl = "http://localhost:8080/otlp-http";
+
 builder.Services.AddRazorPages();
 builder
     .Services
     .AddDataLayer(builder.Configuration)
     .AddScoped<DataGenerator>()
     .AddOpenTelemetry()
-    .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri("http://localhost:8080/otlp-http"))
+    .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri(otlpUrl))
     .ConfigureResource(resource => resource
         .AddService(serviceName: builder.Environment.ApplicationName))
     .WithTracing(e =>
@@ -24,6 +27,11 @@ builder
         e
             .SetSampler(new AlwaysOnSampler())
             .AddSource(DataLayerConfiguration.TELEMETRY_SOURCE)
+            .AddAspNetCoreInstrumentation();
+    })
+    .WithMetrics(e =>
+    {
+        e
             .AddAspNetCoreInstrumentation();
     });
 

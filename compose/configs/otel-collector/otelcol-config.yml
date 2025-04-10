@@ -33,6 +33,11 @@ processors:
     check_interval: 5s
     limit_percentage: 80
     spike_limit_percentage: 25
+  filter/remove_asp_net_core:
+    error_mode: ignore
+    traces:
+      span:
+        - 'instrumentation_scope.name == "Microsoft.AspNetCore"'
   transform/inject_scope_name:
     trace_statements:
       - context: span
@@ -50,7 +55,7 @@ service:
   pipelines:
     traces/spanmetrics:
       receivers: [otlp]
-      processors: [memory_limiter, transform/inject_scope_name, batch]
+      processors: [memory_limiter, transform/inject_scope_name, filter/remove_asp_net_core, batch]
       exporters: [spanmetrics]
     traces/otlp:
       receivers: [ otlp ]
