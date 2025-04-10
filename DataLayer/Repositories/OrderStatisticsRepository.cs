@@ -101,5 +101,29 @@ namespace DataLayer.Repositories
 
             return ordersByCategory;
         }
+        public async Task<CategoryPopularity> GetMostPopularCategoryForCustomer(int customerId)
+        {
+            return await dbContext.Orders
+                .Where(o => o.CustomerId == customerId)
+                .Join(
+                    dbContext.Products,
+                    order => order.ProductId,
+                    product => product.Id,
+                    (order, product) => new { product.Category })
+                .GroupBy(x => x.Category)
+                .Select(g => new
+                {
+                    Category = g.Key,
+                    OrderCount = g.Count()
+                })
+                .OrderByDescending(x => x.OrderCount)
+                .Take(1)
+                .Select(x => new CategoryPopularity
+                {
+                    Category = x.Category,
+                    OrderCount = x.OrderCount
+                })
+                .FirstAsync();
+        }
     }
 }

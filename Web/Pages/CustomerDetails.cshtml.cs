@@ -6,7 +6,7 @@ using Web.Models;
 
 namespace Web.Pages;
 
-public class CustomerDetailsModel(ICustomerRepository customerRepository, IOrdersRepository ordersRepository) : PageModel
+public class CustomerDetailsModel(ICustomerRepository customerRepository, IOrdersRepository ordersRepository, IOrderStatisticsRepository orderStatisticsRepository) : PageModel
 {
     private const int PageSize = 10;
 
@@ -19,6 +19,7 @@ public class CustomerDetailsModel(ICustomerRepository customerRepository, IOrder
     public Customer? Customer { get; private set; }
     public Order[] Orders { get; private set; }
     public PaginationModel PaginationModel { get; private set; }
+    public CategoryPopularity? MostPopularCategory { get; private set; }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -43,6 +44,8 @@ public class CustomerDetailsModel(ICustomerRepository customerRepository, IOrder
             TotalPages = totalPages,
             PagePath = "./CustomerDetails"
         };
+
+        MostPopularCategory = await orderStatisticsRepository.GetMostPopularCategoryForCustomer(CustomerId);
 
         return Page();
     }

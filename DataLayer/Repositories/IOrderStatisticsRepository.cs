@@ -7,6 +7,7 @@ namespace DataLayer.Repositories
         Task<ProductPopularity> GetMostPopularProduct();
         Task<CustomerOrderCount> GetCustomerWithMostOrders();
         Task<OrderAveragesByCategory> GetOrderAveragesByProductCategory();
+        Task<CategoryPopularity> GetMostPopularCategoryForCustomer(int customerId);
     }
     public class OrderStatistics
     {
@@ -39,5 +40,10 @@ namespace DataLayer.Repositories
         public int TotalOrders { get; set; }
         public int UniqueProducts { get; set; }
         public int UniqueCustomers { get; set; }
+    }
+    public class CategoryPopularity
+    {
+        public string Category { get; set; }
+        public int OrderCount { get; set; }
     }
 }
