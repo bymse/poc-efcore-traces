@@ -162,32 +162,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "__systemRef": "hideSeriesFrom",
-            "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "ProductRepository.CrateProduct"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": true
-                }
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
@@ -217,7 +192,7 @@
             "uid": "webstore-metrics"
           },
           "disableTextWrap": false,
-          "editorMode": "builder",
+          "editorMode": "code",
           "exemplar": false,
           "expr": "sum by(span_name) (rate(traces_span_metrics_calls_total{otel_scope_name=\"$otel_scope_name\", service_name=\"$service_name\", span_name=~\"$span_name\"}[5m]))",
           "fullMetaSearch": false,
@@ -234,7 +209,7 @@
       "type": "timeseries"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -242,8 +217,198 @@
         "y": 9
       },
       "id": 5,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "webstore-metrics"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 1
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 7,
+            "x": 0,
+            "y": 10
+          },
+          "id": 7,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.5.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "disableTextWrap": false,
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "(sum(rate(traces_span_metrics_calls_total{otel_scope_name=\"$otel_scope_name\", service_name=\"$service_name\", span_name=~\"$span_name\", status_code=\"STATUS_CODE_ERROR\"}[$__range])) * 100) / sum(rate(traces_span_metrics_calls_total{otel_scope_name=\"$otel_scope_name\", service_name=\"$service_name\", span_name=~\"$span_name\"}[$__range]))",
+              "fullMetaSearch": false,
+              "hide": false,
+              "includeNullMetadata": true,
+              "instant": false,
+              "legendFormat": "{{span_name}}",
+              "range": true,
+              "refId": "B",
+              "useBackend": false
+            }
+          ],
+          "title": "Error Percentage",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "webstore-metrics"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "red",
+                "mode": "shades"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "points",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 17,
+            "x": 7,
+            "y": 10
+          },
+          "id": 6,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.5.2",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "webstore-metrics"
+              },
+              "disableTextWrap": false,
+              "editorMode": "builder",
+              "exemplar": false,
+              "expr": "sum by(span_name) (rate(traces_span_metrics_calls_total{otel_scope_name=\"$otel_scope_name\", service_name=\"$service_name\", span_name=~\"$span_name\", status_code=\"STATUS_CODE_ERROR\"}[5m])) != 0",
+              "fullMetaSearch": false,
+              "hide": false,
+              "includeNullMetadata": true,
+              "instant": false,
+              "legendFormat": "{{span_name}}",
+              "range": true,
+              "refId": "B",
+              "useBackend": false
+            }
+          ],
+          "title": "Error Rate",
+          "type": "timeseries"
+        }
+      ],
       "title": "Errors",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 8,
+      "panels": [],
+      "title": "Latency",
       "type": "row"
     },
     {
@@ -254,83 +419,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 7,
-        "x": 0,
-        "y": 10
-      },
-      "id": 7,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "11.5.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "webstore-metrics"
-          },
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "(sum(rate(traces_span_metrics_calls_total{otel_scope_name=\"$otel_scope_name\", service_name=\"$service_name\", span_name=~\"$span_name\", status_code=\"STATUS_CODE_ERROR\"}[$__range])) * 100) / sum(rate(traces_span_metrics_calls_total{otel_scope_name=\"$otel_scope_name\", service_name=\"$service_name\", span_name=~\"$span_name\"}[$__range]))",
-          "fullMetaSearch": false,
-          "hide": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "{{span_name}}",
-          "range": true,
-          "refId": "B",
-          "useBackend": false
-        }
-      ],
-      "title": "Error Percentage",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "webstore-metrics"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "red",
-            "mode": "shades"
+            "mode": "palette-classic"
           },
           "custom": {
             "axisBorderShow": false,
@@ -340,7 +429,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
-            "drawStyle": "points",
+            "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
@@ -372,19 +461,24 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
-          }
+          },
+          "unit": "ms"
         },
         "overrides": []
       },
       "gridPos": {
         "h": 8,
-        "w": 17,
-        "x": 7,
-        "y": 10
+        "w": 12,
+        "x": 0,
+        "y": 11
       },
-      "id": 6,
+      "id": 9,
       "options": {
         "legend": {
           "calcs": [],
@@ -401,30 +495,152 @@
       "pluginVersion": "11.5.2",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "webstore-metrics"
-          },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "exemplar": false,
-          "expr": "sum by(span_name) (rate(traces_span_metrics_calls_total{otel_scope_name=\"$otel_scope_name\", service_name=\"$service_name\", span_name=~\"$span_name\", status_code=\"STATUS_CODE_ERROR\"}[2m])) != 0",
+          "expr": "histogram_quantile(0.95, sum by(le, span_name) (rate(traces_span_metrics_duration_milliseconds_bucket{otel_scope_name=\"$otel_scope_name\", service_name=\"$service_name\", span_name=~\"$span_name\"}[5m])))",
           "fullMetaSearch": false,
-          "hide": false,
           "includeNullMetadata": true,
-          "instant": false,
           "legendFormat": "{{span_name}}",
           "range": true,
-          "refId": "B",
+          "refId": "A",
           "useBackend": false
         }
       ],
-      "title": "Error Rate",
+      "title": "Latency p95",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "webstore-metrics"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "CustomerRepository.GetCustomerById",
+                  "CustomerRepository.GetCustomers",
+                  "CustomerRepository.GetCustomersCount",
+                  "OrdersRepository.GetCustomerOrders",
+                  "ProductRepository.GetProductById",
+                  "ProductRepository.GetProducts",
+                  "ProductRepository.GetProductsCount"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "histogram_quantile(0.75, sum by(le, span_name) (rate(traces_span_metrics_duration_milliseconds_bucket{otel_scope_name=\"$otel_scope_name\", service_name=\"$service_name\", span_name=~\"$span_name\"}[5m])))",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{span_name}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Latency p75",
       "type": "timeseries"
     }
   ],
   "preload": false,
-  "refresh": "",
+  "refresh": "30s",
   "schemaVersion": 40,
   "tags": [],
   "templating": {
@@ -468,9 +684,7 @@
       {
         "current": {
           "text": "All",
-          "value": [
-            "$__all"
-          ]
+          "value": "$__all"
         },
         "definition": "query_result(count by (span_name)(count_over_time(traces_span_metrics_calls_total{otel_scope_name=\"$otel_scope_name\", service_name=\"$service_name\"}[$__range])))",
         "includeAll": true,
@@ -490,13 +704,13 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "R.E.D. metrics cool",
   "uid": "beienxwtq39c0a",
-  "version": 22,
+  "version": 27,
   "weekStart": ""
 }
