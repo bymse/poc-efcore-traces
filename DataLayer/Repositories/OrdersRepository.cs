@@ -14,12 +14,21 @@ internal class OrdersRepository(MyDbContext dbContext) : IOrdersRepository
             .ToArrayAsync();
     }
 
-    public Task<Order[]> GetCustomerOrders(int customerId)
+    public Task<int> GetCustomerOrdersCount(int customerId)
+    {
+        return dbContext.Orders
+            .Where(o => o.CustomerId == customerId)
+            .CountAsync();
+    }
+
+    public Task<Order[]> GetCustomerOrders(int customerId, int skip, int take)
     {
         return dbContext.Orders
             .Where(o => o.CustomerId == customerId)
             .Include(o => o.Product)
             .OrderByDescending(o => o.CreatedDate)
+            .Skip(skip)
+            .Take(take)
             .ToArrayAsync();
     }
 

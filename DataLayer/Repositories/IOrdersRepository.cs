@@ -6,7 +6,8 @@ public interface IOrdersRepository
 {
     Task<OrderModel[]> GetAllModels(int take);
     Task CreateOrders(params Order[] order);
-    Task<Order[]> GetCustomerOrders(int customerId);
+    Task<int> GetCustomerOrdersCount(int customerId);
+    Task<Order[]> GetCustomerOrders(int customerId, int skip, int take);
 }
 
 public class OrderModel

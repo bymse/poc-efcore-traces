@@ -51,6 +51,8 @@
                     }
                 </tbody>
             </table>
+
+            @await Html.PartialAsync("_Pagination", Model.PaginationModel)
         }
         else
         {
