@@ -1,0 +1,119 @@
+@page
+@model OrderStatisticsModel
+@{
+    ViewData["Title"] = "Order Statistics";
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h1>Order Statistics</h1>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h4>Most Popular Product</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.MostPopularProduct != null)
+                {
+                    <div class="mb-2"><strong>Name:</strong> @Model.MostPopularProduct.Name</div>
+                    <div class="mb-2"><strong>Category:</strong> @Model.MostPopularProduct.Category</div>
+                    <div class="mb-2"><strong>Order Count:</strong> @Model.MostPopularProduct.OrderCount</div>
+                }
+                else
+                {
+                    <p>No popular product data available.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h4>Top Customer</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.TopCustomer != null)
+                {
+                    <div class="mb-2"><strong>Name:</strong> @Model.TopCustomer.FullName</div>
+                    <div class="mb-2"><strong>Order Count:</strong> @Model.TopCustomer.OrderCount</div>
+                }
+                else
+                {
+                    <p>No top customer data available.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h4>Top Category Statistics</h4>
+            </div>
+            <div class="card-body">
+                @if (Model.CategoryStatistics != null)
+                {
+                    <div class="mb-2"><strong>Category:</strong> @Model.CategoryStatistics.Category</div>
+                    <div class="mb-2"><strong>Total Orders:</strong> @Model.CategoryStatistics.TotalOrders</div>
+                    <div class="mb-2"><strong>Percentage of All Orders:</strong>
+                        @Model.CategoryStatistics.PercentageOfAllOrders.ToString("F2")%
+                    </div>
+                    <div class="mb-2"><strong>Unique Products:</strong> @Model.CategoryStatistics.UniqueProducts</div>
+                    <div class="mb-2"><strong>Unique Customers:</strong> @Model.CategoryStatistics.UniqueCustomers</div>
+                }
+                else
+                {
+                    <p>No category statistics available.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Orders Overview</h3>
+    </div>
+    <div class="card-body">
+        @if (Model.Statistics?.Length > 0)
+        {
+            <table class="table" data-test-id="order-statistics-table">
+                <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Description</th>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Total Customer Orders</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var stat in Model.Statistics)
+                {
+                    <tr data-test-id="order-row" data-order-id="@stat.OrderId">
+                        <td>@stat.OrderId</td>
+                        <td>@stat.Description</td>
+                        <td><a asp-page="/CustomerDetails"
+                               asp-route-customerId="@stat.CustomerId">@stat.CustomerFullName</a>
+                        </td>
+                        <td><a asp-page="/ProductDetails" asp-route-productId="@stat.ProductId">@stat.ProductName</a>
+                        </td>
+                        <td>@stat.TotalOrdersForCustomer</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+
+            @await Html.PartialAsync("_Pagination", Model.PaginationModel)
+        }
+        else
+        {
+            <p>No order statistics available.</p>
+        }
+    </div>
+</div>
