@@ -12,8 +12,8 @@ namespace DataLayer.Repositories
 
         public async Task<OrderStatistics[]> GetPaginatedOrderStatistics(int skip, int take)
         {
-            var query = from order in dbContext.Orders
-                select new OrderStatistics
+            return await dbContext.Orders
+                .Select(order => new OrderStatistics
                 {
                     OrderId = order.Id,
                     CustomerId = order.CustomerId,
@@ -22,11 +22,9 @@ namespace DataLayer.Repositories
                     CustomerFullName = order.Customer.FirstName + " " + order.Customer.LastName,
                     ProductName = order.Product.Name,
                     TotalOrdersForCustomer = dbContext.Orders.Count(o => o.CustomerId == order.CustomerId)
-                };
-
-            query = query.OrderBy(o => o.OrderId);
-
-            return await query.Skip(skip).Take(take).ToArrayAsync();
+                })
+                .OrderBy(o => o.OrderId)
+                .Skip(skip).Take(take).ToArrayAsync();
         }
 
         public async Task<ProductPopularity> GetMostPopularProduct()
@@ -103,7 +101,7 @@ namespace DataLayer.Repositories
             return ordersByCategory;
         }
 
-        public async Task<CustomerOrderStat> GetMostPopularCategoryForCustomer(int customerId)
+        public async Task<CustomerOrderStat> GetCustomerOrderStats(int customerId)
         {
             return await dbContext.Orders
                 .GroupBy(e => e.CustomerId)
@@ -119,7 +117,7 @@ namespace DataLayer.Repositories
                         })
                         .OrderByDescending(c => c.OrderCount)
                         .First().Category,
-                    
+
                     MostPopularCategoryOrdersCount = g
                         .GroupBy(o => o.Product.Category)
                         .Select(cg => new
@@ -129,7 +127,7 @@ namespace DataLayer.Repositories
                         })
                         .OrderByDescending(c => c.OrderCount)
                         .First().OrderCount,
-                    
+
                     MostPopularProduct = g
                         .GroupBy(o => o.Product.Name)
                         .Select(pg => new
@@ -139,7 +137,7 @@ namespace DataLayer.Repositories
                         })
                         .OrderByDescending(p => p.OrderCount)
                         .First().ProductName,
-                    
+
                     MostPopularProductOrdersCount = g
                         .GroupBy(o => o.Product.Name)
                         .Select(pg => new

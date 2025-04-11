@@ -31,9 +31,9 @@ public abstract class ScenarioBase(IPage page, string baseUrl)
         return [.. ids];
     }
 
-    protected int[] GetRandomItems(int[] items, int count)
+    protected int[] GetRandomItems(int[] items, int count, int max = 4)
     {
-        int skip = Random.Next(4);
+        int skip = Random.Next(max);
         return [.. items.Skip(skip).Take(Math.Min(count, items.Length - skip))];
     }
 }

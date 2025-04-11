@@ -45,7 +45,7 @@ public class CustomerDetailsModel(ICustomerRepository customerRepository, IOrder
             PagePath = "./CustomerDetails"
         };
 
-        MostPopularCategory = await orderStatisticsRepository.GetMostPopularCategoryForCustomer(CustomerId);
+        MostPopularCategory = await orderStatisticsRepository.GetCustomerOrderStats(CustomerId);
 
         return Page();
     }

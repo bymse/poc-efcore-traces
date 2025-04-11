@@ -20,7 +20,7 @@ public class CustomerScenario(IPage page, string baseUrl) : ScenarioBase(page, b
             return;
         }
 
-        var randomCustomerIds = GetRandomItems(customerIds, CUSTOMER_DETAILS_TO_VISIT);
+        var randomCustomerIds = GetRandomItems(customerIds, CUSTOMER_DETAILS_TO_VISIT, 3);
 
         foreach (var id in randomCustomerIds)
         {

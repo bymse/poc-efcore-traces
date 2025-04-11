@@ -7,7 +7,7 @@ namespace DataLayer.Repositories
         Task<ProductPopularity> GetMostPopularProduct();
         Task<CustomerOrderCount> GetCustomerWithMostOrders();
         Task<OrderAveragesByCategory> GetOrderAveragesByProductCategory();
-        Task<CustomerOrderStat> GetMostPopularCategoryForCustomer(int customerId);
+        Task<CustomerOrderStat> GetCustomerOrderStats(int customerId);
     }
     public class OrderStatistics
     {
