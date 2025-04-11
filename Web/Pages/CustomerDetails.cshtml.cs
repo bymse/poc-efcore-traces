@@ -19,7 +19,7 @@ public class CustomerDetailsModel(ICustomerRepository customerRepository, IOrder
     public Customer? Customer { get; private set; }
     public Order[] Orders { get; private set; }
     public PaginationModel PaginationModel { get; private set; }
-    public CategoryPopularity? MostPopularCategory { get; private set; }
+    public CustomerOrderStat? MostPopularCategory { get; private set; }
 
     public async Task<IActionResult> OnGetAsync()
     {

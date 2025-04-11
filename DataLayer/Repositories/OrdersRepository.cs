@@ -26,7 +26,7 @@ internal class OrdersRepository(MyDbContext dbContext) : IOrdersRepository
         return dbContext.Orders
             .Where(o => o.CustomerId == customerId)
             .Include(o => o.Product)
-            .OrderByDescending(o => o.CreatedDate)
+            .OrderBy(e => e.Id)
             .Skip(skip)
             .Take(take)
             .ToArrayAsync();

@@ -13,16 +13,16 @@ namespace DataLayer.Repositories
         public async Task<OrderStatistics[]> GetPaginatedOrderStatistics(int skip, int take)
         {
             var query = from order in dbContext.Orders
-                        select new OrderStatistics
-                        {
-                            OrderId = order.Id,
-                            CustomerId = order.CustomerId,
-                            ProductId = order.ProductId,
-                            Description = order.Description,
-                            CustomerFullName = order.Customer.FirstName + " " + order.Customer.LastName,
-                            ProductName = order.Product.Name,
-                            TotalOrdersForCustomer = dbContext.Orders.Count(o => o.CustomerId == order.CustomerId)
-                        };
+                select new OrderStatistics
+                {
+                    OrderId = order.Id,
+                    CustomerId = order.CustomerId,
+                    ProductId = order.ProductId,
+                    Description = order.Description,
+                    CustomerFullName = order.Customer.FirstName + " " + order.Customer.LastName,
+                    ProductName = order.Product.Name,
+                    TotalOrdersForCustomer = dbContext.Orders.Count(o => o.CustomerId == order.CustomerId)
+                };
 
             query = query.OrderBy(o => o.OrderId);
 
@@ -73,6 +73,7 @@ namespace DataLayer.Repositories
                     })
                 .FirstAsync();
         }
+
         public async Task<OrderAveragesByCategory> GetOrderAveragesByProductCategory()
         {
             var ordersByCategory = await dbContext.Orders
@@ -101,29 +102,63 @@ namespace DataLayer.Repositories
 
             return ordersByCategory;
         }
-        public async Task<CategoryPopularity> GetMostPopularCategoryForCustomer(int customerId)
+
+        public async Task<CustomerOrderStat> GetMostPopularCategoryForCustomer(int customerId)
         {
             return await dbContext.Orders
-                .Where(o => o.CustomerId == customerId)
-                .Join(
-                    dbContext.Products,
-                    order => order.ProductId,
-                    product => product.Id,
-                    (order, product) => new { product.Category })
-                .GroupBy(x => x.Category)
+                .GroupBy(e => e.CustomerId)
                 .Select(g => new
                 {
-                    Category = g.Key,
-                    OrderCount = g.Count()
+                    CustomerId = g.Key,
+                    MostPopularCategory = g
+                        .GroupBy(o => o.Product.Category)
+                        .Select(cg => new
+                        {
+                            Category = cg.Key,
+                            OrderCount = cg.Count()
+                        })
+                        .OrderByDescending(c => c.OrderCount)
+                        .First().Category,
+                    
+                    MostPopularCategoryOrdersCount = g
+                        .GroupBy(o => o.Product.Category)
+                        .Select(cg => new
+                        {
+                            Category = cg.Key,
+                            OrderCount = cg.Count()
+                        })
+                        .OrderByDescending(c => c.OrderCount)
+                        .First().OrderCount,
+                    
+                    MostPopularProduct = g
+                        .GroupBy(o => o.Product.Name)
+                        .Select(pg => new
+                        {
+                            ProductName = pg.Key,
+                            OrderCount = pg.Count()
+                        })
+                        .OrderByDescending(p => p.OrderCount)
+                        .First().ProductName,
+                    
+                    MostPopularProductOrdersCount = g
+                        .GroupBy(o => o.Product.Name)
+                        .Select(pg => new
+                        {
+                            ProductName = pg.Key,
+                            OrderCount = pg.Count()
+                        })
+                        .OrderByDescending(p => p.OrderCount)
+                        .First().OrderCount,
                 })
-                .OrderByDescending(x => x.OrderCount)
-                .Take(1)
-                .Select(x => new CategoryPopularity
+                .Where(e => e.CustomerId == customerId)
+                .Select(x => new CustomerOrderStat
                 {
-                    Category = x.Category,
-                    OrderCount = x.OrderCount
+                    MostPopularCategory = x.MostPopularCategory,
+                    MostPopularCategoryOrdersCount = x.MostPopularCategoryOrdersCount,
+                    MostPopularProduct = x.MostPopularProduct,
+                    MostPopularProductOrdersCount = x.MostPopularProductOrdersCount
                 })
-                .FirstAsync();
+                .SingleAsync();
         }
     }
 }

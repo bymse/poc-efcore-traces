@@ -27,17 +27,23 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header">
-                <h4>Most Popular Category</h4>
+                <h4>Customer stats</h4>
             </div>
             <div class="card-body">
                 @if (Model.MostPopularCategory != null)
                 {
-                    <div class="mb-2"><strong>Category:</strong> @Model.MostPopularCategory.Category</div>
-                    <div class="mb-2"><strong>Order Count:</strong> @Model.MostPopularCategory.OrderCount</div>
+                    <div class="mb-2"><strong>Most Popular Category:</strong> @Model.MostPopularCategory.MostPopularCategory
+                    </div>
+                    <div class="mb-2"><strong>Orders in Most Popular Category:</strong>
+                        @Model.MostPopularCategory.MostPopularCategoryOrdersCount</div>
+                    <div class="mb-2"><strong>Most Popular Product:</strong> @Model.MostPopularCategory.MostPopularProduct
+                    </div>
+                    <div class="mb-2"><strong>Orders for Most Popular Product:</strong>
+                        @Model.MostPopularCategory.MostPopularProductOrdersCount</div>
                 }
                 else
                 {
-                    <p>No popular category found for this customer.</p>
+                    <p>No popular category or product found for this customer.</p>
                 }
             </div>
         </div>
