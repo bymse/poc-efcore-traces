@@ -81,28 +81,27 @@
         {
             <table class="table" data-test-id="order-statistics-table">
                 <thead>
-                <tr>
-                    <th>Order ID</th>
-                    <th>Description</th>
-                    <th>Customer</th>
-                    <th>Product</th>
-                    <th>Total Customer Orders</th>
-                </tr>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Description</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Total Customer Orders</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach (var stat in Model.Statistics)
-                {
-                    <tr data-test-id="order-row" data-order-id="@stat.OrderId">
-                        <td>@stat.OrderId</td>
-                        <td>@stat.Description</td>
-                        <td><a asp-page="/CustomerDetails"
-                               asp-route-customerId="@stat.CustomerId">@stat.CustomerFullName</a>
-                        </td>
-                        <td><a asp-page="/ProductDetails" asp-route-productId="@stat.ProductId">@stat.ProductName</a>
-                        </td>
-                        <td>@stat.TotalOrdersForCustomer</td>
-                    </tr>
-                }
+                    @foreach (var stat in Model.Statistics)
+                    {
+                        <tr data-test-id="order-stat-row" data-order-id="@stat.OrderId">
+                            <td>@stat.OrderId</td>
+                            <td>@stat.Description</td>
+                            <td><a asp-page="/CustomerDetails" asp-route-customerId="@stat.CustomerId"
+                                    data-test-id="customer-link">@stat.CustomerFullName</a></td>
+                            <td><a asp-page="/ProductDetails" asp-route-productId="@stat.ProductId"
+                                    data-test-id="product-link">@stat.ProductName</a></td>
+                            <td>@stat.TotalOrdersForCustomer</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
 

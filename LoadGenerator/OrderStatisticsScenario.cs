@@ -13,20 +13,15 @@ public class OrderStatisticsScenario(IPage page, string baseUrl) : ScenarioBase(
             WaitUntil = WaitUntilState.NetworkIdle
         });
 
-        var orderRows = await Page.QuerySelectorAllAsync("[data-test-id='order-row']");
+        var orderRows = await Page.QuerySelectorAllAsync("[data-test-id='order-stat-row']");
 
         if (orderRows.Count == 0)
         {
             return;
         }
 
-        var randomRowIndex = Random.Next(orderRows.Count);
-        var randomRow = orderRows[randomRowIndex];
-        await randomRow.ScrollIntoViewIfNeededAsync();
-        await Task.Delay(Random.Next(300, 800), cancellationToken);
-
-        var customerLinks = await Page.QuerySelectorAllAsync("[data-test-id='order-row'] td:nth-child(3) a");
-        var productLinks = await Page.QuerySelectorAllAsync("[data-test-id='order-row'] td:nth-child(4) a");
+        var customerLinks = await Page.QuerySelectorAllAsync("[data-test-id='customer-link']");
+        var productLinks = await Page.QuerySelectorAllAsync("[data-test-id='product-link']");
 
         var allLinks = new List<IElementHandle>();
         allLinks.AddRange(customerLinks);
