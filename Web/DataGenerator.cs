@@ -83,7 +83,8 @@ public class DataGenerator(
     {
         const int customerId = 1;
 
-        var customer = await customerRepository.GetCustomerById(customerId) ?? throw new Exception($"Customer with ID {customerId} not found.");
+        var customer = await customerRepository.GetCustomerById(customerId) ??
+                       throw new Exception($"Customer with ID {customerId} not found.");
 
         var products = await productRepository.GetProducts();
 
@@ -94,10 +95,12 @@ public class DataGenerator(
             products = [defaultProduct];
         }
 
-        const int totalOrders = 5000;
-        var orders = new List<Order>(totalOrders);
+        const int ordersForFirstCustomer = 250_000;
 
-        for (int i = 0; i < totalOrders; i++)
+        var customerOrdersCount = await ordersRepository.GetCustomerOrdersCount(customerId);
+
+        var orders = new List<Order>(1000);
+        for (int i = customerOrdersCount; i < ordersForFirstCustomer; i++)
         {
             var product = products[i % products.Length];
 
@@ -110,8 +113,17 @@ public class DataGenerator(
                 Customer = customer,
                 Product = product
             });
+
+            if (orders.Count == 1000)
+            {
+                await ordersRepository.CreateOrders([.. orders]);
+                orders.Clear();
+            }
         }
 
-        await ordersRepository.CreateOrders([.. orders]);
+        if (orders.Count > 0)
+        {
+            await ordersRepository.CreateOrders([.. orders]);
+        }
     }
 }
