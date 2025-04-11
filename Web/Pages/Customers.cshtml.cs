@@ -8,7 +8,7 @@ namespace Web.Pages;
 
 public class CustomersModel(ICustomerRepository customerRepository) : PageModel
 {
-    private const int PageSize = 30;
+    private const int PageSize = 20;
 
     [BindProperty(SupportsGet = true)]
     public int CurrentPage { get; set; } = 1;

@@ -10,20 +10,22 @@
     </div>
 </div>
 
-<div class="card mb-4" data-test-id="customer-info-card">
-    <div class="card-header">
-        <h3>Customer Information</h3>
-    </div>
-    <div class="card-body">
-        <p><strong>First Name:</strong> @Model.Customer.FirstName</p>
-        <p><strong>Last Name:</strong> @Model.Customer.LastName</p>
-        <p><strong>Customer ID:</strong> @Model.Customer.Id</p>
-    </div>
-</div>
-
 <div class="row mb-4">
     <div class="col-md-4">
-        <div class="card" data-test-id="customer-popular-category-card">
+        <div class="card">
+            <div class="card-header">
+                <h4>Customer Information</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-2"><strong>First Name:</strong> @Model.Customer.FirstName</div>
+                <div class="mb-2"><strong>Last Name:</strong> @Model.Customer.LastName</div>
+                <div class="mb-2"><strong>Customer ID:</strong> @Model.Customer.Id</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
             <div class="card-header">
                 <h4>Most Popular Category</h4>
             </div>

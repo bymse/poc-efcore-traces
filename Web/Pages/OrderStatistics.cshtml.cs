@@ -17,7 +17,7 @@ public class OrderStatisticsModel(IOrderStatisticsRepository orderStatisticsRepo
     [BindProperty(SupportsGet = true)]
     public int CurrentPage { get; set; } = 1;
 
-    private const int PageSize = 10;
+    private const int PageSize = 20;
 
     public async Task OnGetAsync()
     {
