@@ -4,7 +4,17 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+    <h1 class="mb-4">Monitoring Dashboard</h1>
+    <div class="list-group">
+        <a href="@Model.GrafanaWebMonitoringUrl" target="_blank" class="list-group-item list-group-item-action py-3">
+            1. Grafana Web Monitoring
+        </a>
+        <a href="@Model.GrafanaRedMetricsUrl" target="_blank" class="list-group-item list-group-item-action py-3">
+            2. Grafana R.E.D Metrics
+        </a>
+        <a href="@Model.GrafanaTracesSearchUrl" target="_blank" class="list-group-item list-group-item-action py-3">
+            3. Grafana Traces Search
+        </a>
+    </div>
 </div>
