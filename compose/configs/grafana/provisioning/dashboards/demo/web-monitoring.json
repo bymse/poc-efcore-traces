@@ -18,7 +18,7 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 5,
+    "id": 4,
     "links": [],
     "panels": [
         {
@@ -122,7 +122,7 @@
                     "expr": "sum(rate(http_server_request_duration_seconds_count[5m]))",
                     "fullMetaSearch": false,
                     "includeNullMetadata": true,
-                    "legendFormat": "__auto",
+                    "legendFormat": "Total",
                     "range": true,
                     "refId": "A",
                     "useBackend": false
@@ -446,13 +446,13 @@
         "list": []
     },
     "time": {
-        "from": "now-6h",
+        "from": "now-1h",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "browser",
     "title": "Web monitoring",
     "uid": "eeiiievmiry80f",
-    "version": 3,
+    "version": 2,
     "weekStart": ""
 }

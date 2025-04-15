@@ -1,4 +1,4 @@
-﻿{
+{
   "annotations": {
     "list": [
       {
@@ -709,7 +709,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "R.E.D. metrics cool",
+  "title": "R.E.D. metrics",
   "uid": "beienxwtq39c0a",
   "version": 27,
   "weekStart": ""
