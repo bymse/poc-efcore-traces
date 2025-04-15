@@ -1,9 +1,9 @@
 using DataLayer.Entities;
 using DataLayer.Repositories;
 
-namespace Web;
+namespace DataGenerator;
 
-public class DataGenerator(
+public class Generator(
     ICustomerRepository customerRepository,
     IOrdersRepository ordersRepository,
     IProductRepository productRepository)
@@ -22,13 +22,13 @@ public class DataGenerator(
         }
 
         var newCustomers = new List<Customer>();
-        for (int i = existingCustomers.Length; i < customerCount; i++)
+        for (var i = existingCustomers.Length; i < customerCount; i++)
         {
             newCustomers.Add(new Customer
             {
                 FirstName = $"Customer{i}",
                 LastName = $"LastName{i}",
-                Orders = new List<Order>()
+                Orders = []
             });
         }
 
@@ -38,13 +38,13 @@ public class DataGenerator(
         }
 
         var newProducts = new List<Product>();
-        for (int i = existingProducts.Length; i < productCount; i++)
+        for (var i = existingProducts.Length; i < productCount; i++)
         {
             newProducts.Add(new Product
             {
                 Name = $"Product{i}",
                 Category = $"Category{i % 10}",
-                Orders = new List<Order>()
+                Orders = []
             });
         }
 
@@ -61,7 +61,7 @@ public class DataGenerator(
 
         foreach (var customer in allCustomers.Take(customerCount))
         {
-            for (int i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
                 var product = allProducts[random.Next(allProducts.Length)];
                 orders.Add(new Order
@@ -100,7 +100,7 @@ public class DataGenerator(
         var customerOrdersCount = await ordersRepository.GetCustomerOrdersCount(customerId);
 
         var orders = new List<Order>(1000);
-        for (int i = customerOrdersCount; i < ordersForFirstCustomer; i++)
+        for (var i = customerOrdersCount; i < ordersForFirstCustomer; i++)
         {
             var product = products[i % products.Length];
 

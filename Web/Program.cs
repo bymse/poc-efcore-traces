@@ -11,15 +11,12 @@ using var observer = DataLayerConfiguration.StartObserver();
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string otlpUrl = "http://localhost:8080/otlp-http";
-
 builder.Services.AddRazorPages();
 builder
     .Services
     .AddDataLayer(builder.Configuration)
-    .AddScoped<DataGenerator>()
     .AddOpenTelemetry()
-    .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri(otlpUrl))
+    .UseOtlpExporter(OtlpExportProtocol.HttpProtobuf, new Uri(builder.Configuration.GetConnectionString("OtlpHttp")!))
     .ConfigureResource(resource => resource
         .AddService(serviceName: builder.Environment.ApplicationName))
     .WithTracing(e =>
@@ -38,22 +35,14 @@ builder
 var app = builder.Build();
 
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.MapRazorPages();
-
 
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<IMigrator>();
     await dbContext.MigrateAsync();
-
-    var dataGenerator = scope.ServiceProvider.GetRequiredService<DataGenerator>();
-    await dataGenerator.GenerateOrders();
-    await dataGenerator.GenerateOrdersForFirstCustomer();
 }
 
 app.Run();

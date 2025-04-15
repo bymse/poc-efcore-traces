@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DataLayer\DataLayer.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\Web\appsettings.json" CopyToOutputDirectory="Always">
+        <Link>appsettings.json</Link>
+      </Content>
+    </ItemGroup>
+
+</Project>
