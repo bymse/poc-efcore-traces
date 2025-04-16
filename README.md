@@ -9,6 +9,7 @@ The solution consists of multiple components:
 - **DataLayer**: Contains EF Core context, entities, repositories, and telemetry observers
 - **DataGenerator**: Utility to populate the database with sample data
 - **Web**: ASP.NET Core web application that uses the data layer
+- **LoadGenerator**: Console application to simulate load on the web application
 - **Docker Compose**: Configuration for monitoring infrastructure (Grafana, Prometheus, OpenTelemetry Collector, Jaeger)
 
 Telemetry is automatically collected from EF Core operations and exposed through OpenTelemetry, allowing visualization in Grafana dashboards.
@@ -57,7 +58,23 @@ dotnet run
 
 Access the application at http://localhost:5171
 
-### 4. Explore Telemetry Data
+### 4. Run the Load Generator
+
+The LoadGenerator simulates load on the web application by making HTTP requests using playwright:
+
+```bash
+cd LoadGenerator
+dotnet run
+```
+
+You might need to run playwright install to ensure the necessary browser is installed:
+
+```bash
+cd LoadGenerator
+pwsh bin/Debug/net9.0/playwright.ps1 install
+```
+
+### 5. Explore Telemetry Data
 
 After running the application and generating some traffic:
 
